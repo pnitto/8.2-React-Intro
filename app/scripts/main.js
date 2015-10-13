@@ -60,5 +60,8 @@ var rootElement = (
     </ul>
   </div>
 );
+var ContactForm = React.createClass({
+  propTypes: React.PropTypes.object.isRequired
+})
 
 ReactDOM.render(rootElement, document.getElementById('react-app'))
