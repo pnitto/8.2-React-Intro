@@ -36,10 +36,10 @@ var ContactItem = React.createClass({
   },
   render() {
     return (
-      <li>
-        <h2>{this.props.name}</h2>
-        <a href={'mailto:' + this.props.email}>{this.props.email}</a>
-        <p>{this.props.description}</p>
+      <li className="ContactItem">
+        <h2 className="ContactItem-name">{this.props.name}</h2>
+        <a href={'mailto:' + this.props.email} className="ContactItem-email">{this.props.email}</a>
+        <p className="ContactItem-description">{this.props.description}</p>
       </li>
     )
   }
@@ -69,11 +69,11 @@ var ContactItem = React.createClass({
 
     render() {
       return (
-        <form onSubmit={this.saveContact}>
+        <form onSubmit={this.saveContact} className="ContactForm">
           <input placeholder="Name" type="text" value={this.state.contact.name} onChange={this.handleChange.bind(this, 'name')} />
             <input placeholder="Email" type="email" value={this.state.contact.email} onChange={this.handleChange.bind(this, 'email')} />
               <textarea placeholder="Description" type="text" value={this.state.contact.description} onChange={this.handleChange.bind(this,'description')}></textarea>
-            <button type="submit">button</button>
+            <button type="submit" className="Add Contact">button</button>
         </form>
       )
     }
@@ -106,9 +106,9 @@ var ContactsComponent = React.createClass({
       });
 
     return (
-      <div>
-        <h1>Contacts</h1>
-        <ul>
+      <div className="ContactView">
+        <h1 className="ContactView-title">Contacts</h1>
+        <ul className="ContactView-list">
           {listElements}
         </ul>
         <ContactForm initialContact={this.state.newContact}  onSaveContact={this.submitNewContact} />
