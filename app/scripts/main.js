@@ -65,19 +65,34 @@ var listElements = contacts
 
   var ContactForm = React.createClass({
     propTypes: {
-      contact: React.PropTypes.object.isRequired
+      value: React.PropTypes.object.isRequired,
+      onChange: React.PropTypes.func.isRequired,
+    },
+    getInitialState(){
+      return {
+        value: "hello"
+      };
+    },
+    handleChange(e){
+      this.setState({
+        value: e.target.value
+      })
     },
     render() {
+      var value = this.state.value;
+      var oldContact = this.props.value;
+      var onChange = this.props.onChange;
       return (
         <form>
-          <input placeholder="Name" type="text" value={this.props.contact.name}></input>
-            <input placeholder="Email" type="email" value={this.props.contact.email}></input>
-              <textarea placeholder="Description" type="text" value={this.props.contact.description}></textarea>
+          <input placeholder="Name" type="text" value={value.name} onChange={this.handleChange} />
+            <input placeholder="Email" type="email" value={value.email} onChange={this.handleChange} />
+              <textarea placeholder="Description" type="text" value={value.description} onChange={this.handleChange}></textarea>
               <button type="submit">button</button>
               </form>
   )
   }
   });
+
 var RootElement = React.createClass({
   render(){
     return(
@@ -86,9 +101,9 @@ var RootElement = React.createClass({
         <ul>
           {listElements}
         </ul>
-        <ContactForm contact={this.props.contact}></ContactForm>
+        <ContactForm value={this.value} onChange={this.onChange}></ContactForm>
       </div>
     )
   }
 })
-ReactDOM.render(<RootElement contact={newContact} />, document.getElementById('react-app'))
+ReactDOM.render(<RootElement />, document.getElementById('react-app'))
