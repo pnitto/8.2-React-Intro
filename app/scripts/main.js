@@ -21,22 +21,12 @@
 ReactDOM.render(<App />, document.getElementById('react-app'))
 
 */
-var contacts = [
-  {
-    key: 1,
-    name: "James K Nelson",
-    email: "james@jamesknelson.com",
-    description: "Front-end Unicorn"
-  }, {
-    key: 2,
-    name: "Jim",
-    email: "jim@example.com"
-  }, {
-    key: 3,
-    name: "Joe"
-  }
-];
+
+//Have to use "className" to define a class on an element
+
+
 var newContact = {name: "", email: "", description: ""}
+
 
 var ContactItem = React.createClass({
   propTypes: {
@@ -54,56 +44,93 @@ var ContactItem = React.createClass({
     )
   }
 });
-
-var listElements = contacts
-  .filter(function(contact) {
-    return contact.email;
-  })
-  .map(function(contact) {
-    return <ContactItem {...contact}/>;
-  });
-
   var ContactForm = React.createClass({
     propTypes: {
-      value: React.PropTypes.object.isRequired,
-      onChange: React.PropTypes.func.isRequired,
+      initialContact: React.PropTypes.object.isRequired,
+      onSaveContact: React.PropTypes.func.isRequired
     },
     getInitialState(){
       return {
-        value: "hello"
-      };
+        contact: this.props.initialContact
+      }
     },
-    handleChange(e){
+    handleChange(prop,e){
+      var newData = _.object([prop], [e.target.value]);
+      console.log(newData)
       this.setState({
-        value: e.target.value
+        contact: _.extend({}, this.state.contact, newData)
       })
     },
+    saveContact(e){
+      e.preventDefault();
+      this.props.onSaveContact(this.state.contact)
+      this.setState({contact: this.props.initialContact})
+    },
+
     render() {
-      var value = this.state.value;
-      var oldContact = this.props.value;
-      var onChange = this.props.onChange;
       return (
-        <form>
-          <input placeholder="Name" type="text" value={value.name} onChange={this.handleChange} />
-            <input placeholder="Email" type="email" value={value.email} onChange={this.handleChange} />
-              <textarea placeholder="Description" type="text" value={value.description} onChange={this.handleChange}></textarea>
-              <button type="submit">button</button>
-              </form>
-  )
-  }
+        <form onSubmit={this.saveContact}>
+          <input placeholder="Name" type="text" value={this.state.contact.name} onChange={this.handleChange.bind(this, 'name')} />
+            <input placeholder="Email" type="email" value={this.state.contact.email} onChange={this.handleChange.bind(this, 'email')} />
+              <textarea placeholder="Description" type="text" value={this.state.contact.description} onChange={this.handleChange.bind(this,'description')}></textarea>
+            <button type="submit">button</button>
+        </form>
+      )
+    }
   });
 
-var RootElement = React.createClass({
+var ContactsComponent = React.createClass({
+  propTypes: {
+    initialContacts: React.PropTypes.array.isRequired
+  },
+  getInitialState(){
+  return {
+      newContact: {name: "", email: "", description: ""},
+      contacts: this.props.initialContacts
+    }
+  },
+  submitNewContact(contact){
+    contact.key = Date.now();
+    console.log(contact);
+    this.setState({
+      contacts: this.state.contacts.concat([contact])
+    })
+  },
   render(){
-    return(
+    var listElements = this.state.contacts
+      .filter(function(contact) {
+        return contact.email;
+      })
+      .map(function(contact) {
+        return <ContactItem {...contact}/>;
+      });
+
+    return (
       <div>
         <h1>Contacts</h1>
         <ul>
           {listElements}
         </ul>
-        <ContactForm value={this.value} onChange={this.onChange}></ContactForm>
+        <ContactForm initialContact={this.state.newContact}  onSaveContact={this.submitNewContact} />
       </div>
     )
   }
-})
-ReactDOM.render(<RootElement />, document.getElementById('react-app'))
+});
+
+var contacts = [
+  {
+    key: 1,
+    name: "James K Nelson",
+    email: "james@jamesknelson.com",
+    description: "Front-end Unicorn"
+  }, {
+    key: 2,
+    name: "Jim",
+    email: "jim@example.com"
+  }, {
+    key: 3,
+    name: "Joe"
+  }
+];
+
+ReactDOM.render(<ContactsComponent initialContacts={contacts} />, document.getElementById('react-app'));
